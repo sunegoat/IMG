@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>여우비 계곡의 이무기</title>
+    <style>
+        /* 모바일 친화적 리셋 및 기본 설정 */
+        * {
+            box-sizing: border-box;
+            word-break: keep-all;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+            line-height: 1.6;
+            color: #373a3c;
+            background-color: #f3f4f5;
+            margin: 0;
+            padding: 0;
+            font-size: 16px;
+        }
+        
+        /* 배너 이미지 (2400x600) 영역 */
+        header {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #1a73e8; /* 로딩 전 배경색 */
+        }
+        .banner-img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 2400 / 600;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* 메인 컨테이너 */
+        .wiki-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+            background-color: white;
+            min-height: 100vh;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        /* 목차 박스 */
+        .toc {
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 4px;
+            display: inline-block;
+            min-width: 50%;
+        }
+        .toc-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 0.3rem;
+        }
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        .toc li {
+            margin-bottom: 0.3rem;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #1a73e8;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        /* 제목 스타일 */
+        h2 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 0.3rem;
+            color: #333;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+        }
+        h2::before {
+            content: "■ ";
+            color: #1a73e8;
+            font-size: 1.2rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            color: #444;
+            margin-top: 1.5rem;
+        }
+
+        /* 본문 요소 스타일 */
+        ul {
+            padding-left: 1.5rem;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+        del {
+            color: #999;
+        }
+        .quote {
+            border-left: 4px solid #1a73e8;
+            background-color: #f8f9fa;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+            font-size: 0.95rem;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 0 4px;
+            font-weight: bold;
+        }
+
+        /* 캐릭터 그리드 (모바일 대응) */
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .character-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 캐릭터 이미지 스타일 (1024x1024 정사각형 비율 유지) */
+        .character-img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            background-color: #f1f3f5;
+            border: 1px solid #dee2e6;
+        }
+
+        .character-card h4 {
+            margin: 0 0 0.5rem 0;
+            color: #1a73e8;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .tag-wrap {
+            margin-bottom: 0.8rem;
+        }
+        .tag {
+            display: inline-block;
+            background: #e9ecef;
+            color: #495057;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin: 0 3px 3px 0;
+            font-weight: bold;
+        }
+
+        /* 숨겨진 내용 토글 버튼 및 영역 스타일 */
+        .toggle-btn {
+            margin-top: auto;
+            width: 100%;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 0.6rem;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .toggle-btn:hover {
+            background-color: #1557b0;
+        }
+        .toggle-btn.active {
+            background-color: #6c757d;
+        }
+        .spoiler-content {
+            display: none; /* 기본적으로 숨김 */
+            margin-top: 0.8rem;
+            padding: 0.8rem;
+            background-color: #f8f9fa;
+            border-left: 3px solid #dc3545;
+            font-size: 0.9rem;
+            border-radius: 0 4px 4px 0;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .spoiler-content strong {
+            color: #dc3545;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 테이블 스크롤 (모바일 대응) */
+        .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        /* 푸터 */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.8rem;
+            color: #888;
+            border-top: 1px solid #eee;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 600px) {
+            .toc {
+                width: 100%;
+            }
+            header h1 {
+                font-size: 1.5rem;
+            }
+            h2 {
+                font-size: 1.3rem;
+            }
+            table {
+                white-space: normal;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="title.png" alt="여우비 계곡의 이무기" class="banner-img">
+    </header>
+
+    <div class="wiki-container">
+        
+        <div class="toc">
+            <div class="toc-title">목차</div>
+            <ul>
+                <li><a href="#s-1">1. 개요</a></li>
+                <li><a href="#s-2">2. 주요 무대 및 이벤트</a></li>
+                <li><a href="#s-3">3. 등장인물</a></li>
+                <li><a href="#s-4">4. 숨겨진 설정</a></li>
+            </ul>
+        </div>
+
+        <section id="s-1">
+            <h2>1. 개요</h2>
+            <p>도시에서 자취하며 평범하게 살고 있던 주인공에게 여름방학, 4명의 소녀가 불쑥 찾아온다. 이들의 정체는 무려 <strong>수백 년 동안 승천을 못하던 이무기들!</strong></p>
+            <div class="quote">
+                <strong>산신령의 제안:</strong> "저기 뱀골마을 조상들의 핏줄을 이어받은, 마지막 자손이 하나 있거든? 걔의 마음을 쏙 빼놓으면 승천시켜주겠노라~"
+            </div>
+            <ul>
+                <li><strong>기한:</strong> 2025년 윤6월 마지막 날인 <span class="highlight">8월 22일</span>. 여우비가 내리는 마지막 날, 오직 <strong>단 한 명</strong>만 승천할 수 있다.</li>
+            </ul>
+        </section>
+
+        <section id="s-2">
+            <h2>2. 주요 무대 및 이벤트</h2>
+            <p>네 명의 이무기 소녀들과 함께하는 여름방학. 특별한 장소에 가면 그녀들의 진심을 들어볼 수 있을지도...?</p>
+            
+            <h3>2.1. 주요 장소</h3>
+            <ul>
+                <li><strong>미룡시:</strong> 경기도 내륙신도시이자 주인공의 자취방이 있는 메인 무대.</li>
+                <li><strong>뱀골마을 & 여우비계곡:</strong> 조상님들의 고향이자 이무기 승천 명소. 그리고 혜연이의 숨겨진 모습을 볼 수 있는 곳.</li>
+                <li><strong>수목원:</strong> 의외로 이서가 좋아하는 곳. 나무를 보는 아련한 그녀의 눈빛의 이유는...?</li>
+                <li><strong>수족관/놀이공원:</strong> 미지의 동심 공간. 수족관 아래 눈부심은 수족관의 빛기둥 때문일까, 아니면 도하의 순수한 눈망울 때문일까. </li>
+                <li><strong>콘서트장:</strong> 소음악으로 마음이 하나되는 곳이자 소민이가 좋아하는 장소.</li>
+            </ul>
+
+            <h3>2.2. 봉사활동 이벤트</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>활동명</th>
+                            <th>주요 내용</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>뱀골마을 농활 (2박3일)</strong></td>
+                            <td>서툰 농사일 슬랩스틱 + 밤 계곡 담력체험의 아슬아슬한 스킨십 텐션. 과거 떡밥 투척.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>천문대 별빛축제 (2박3일)</strong></td>
+                            <td>낮엔 땡볕에서 주차 안내, 밤엔 은하수 아래에서 컵라면 먹는 감성 폭발 구간.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>유기견 보호소</strong></td>
+                            <td>대환장 파티. 몇백년 살은 영물에게도 개는 쉽지 않다.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>지역 아동센터</strong></td>
+                            <td>아이들의 무한 체력에 털리는 코믹함 + 순수함에 동화되어 짓는 이무기들의 찐웃음.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="s-3">
+            <h2>3. 등장인물</h2>
+            <div class="character-grid">
+                <!-- 백혜연 -->
+                <div class="character-card">
+                    <img src="1.png" alt="백혜연" class="character-img">
+                    <h4>백혜연</h4>
+                    <div class="tag-wrap">
+                        <span class="tag">ISFJ</span>
+                        <span class="tag">메가데레</span>
+                        <span class="tag">허당</span>
+                        <span class="tag">정실 호소인</span>
+                    </div>
+                    <ul>
+                        <li><strong>특징:</strong> 맹목적으로 "서방님~" 하며 헌신하지만 항상 나사가 빠져있는 귀여운 허당.</li>
+                    </ul>
+                    <button class="toggle-btn" data-open="속마음 (스포일러) 열기" data-close="속마음 닫기" onclick="toggleSpoiler(this)">속마음 (스포일러) 열기</button>
+                    <div class="spoiler-content">
+                        <strong>[내면의 비밀]</strong><br>
+                        징그러운 진짜 자신을 극도로 혐오해서 억지로 자아를 지우고 연기 중. 맹목적 헌신은 용이 되기를 간절히 바래서 노력한 결과. 그러나 너무 간절했기에 성격이 소극적이고 어두워져버림. 여우비계곡(자연)에만 가면 무의식적으로 억눌렀던 활달한 본성이 튀어나와 버린다.
+                    </div>
+                </div>
+
+                <!-- 홍이서 -->
+                <div class="character-card">
+                    <img src="2.png" alt="홍이서" class="character-img">
+                    <h4>홍이서</h4>
+                    <div class="tag-wrap">
+                        <span class="tag">ESTP</span>
+                        <span class="tag">털털함</span>
+                        <span class="tag">도파민 중독</span>
+                    </div>
+                    <ul>
+                        <li><strong>특징:</strong> 내숭 1도 없는 동네 불알친구 포지션. 순간의 짜릿함을 좇는 도파민 중독자.</li>
+                    </ul>
+                    <button class="toggle-btn" data-open="속마음 (스포일러) 열기" data-close="속마음 닫기" onclick="toggleSpoiler(this)">속마음 (스포일러) 열기</button>
+                    <div class="spoiler-content">
+                        <strong>[내면의 비밀]</strong><br>
+                        인간과 이별하는 상처가 쌓여, 인간의 삶이 부질없이 짧음을 깨닫고 긴 시간보다는 순간순간에 집중한다. 하지만  영원에 갇혀 정체되어 있는 자신과 달리, 변화하고 늙어가는 인간의 유한한 삶을 속으로는 누구보다 강렬하게 동경하는 낭만파.
+                    </div>
+                </div>
+
+                <!-- 지소민 -->
+                <div class="character-card">
+                    <img src="3.png" alt="지소민" class="character-img">
+                    <h4>지소민</h4>
+                    <div class="tag-wrap">
+                        <span class="tag">INTJ</span>
+                        <span class="tag">쿨데레 고양이</span>
+                        <span class="tag">급발진</span>
+                    </div>
+                    <ul>
+                        <li><strong>특징:</strong> 자기 딴에는 같이 오랜시간 보내면 자연스레 좋아하게 된다고 생각한다. 겉으론 무뚝뚝하지만, 스킨십 거리 조절에 실패해서 무자각 백허그 같은 급발진을 시전하고 혼자 고장난다.</li>
+                    </ul>
+                    <button class="toggle-btn" data-open="속마음 (스포일러) 열기" data-close="속마음 닫기" onclick="toggleSpoiler(this)">속마음 (스포일러) 열기</button>
+                    <div class="spoiler-content">
+                        <strong>[내면의 비밀]</strong><br>
+                        수백 년을 혼자 살아서 대인관계 능력이 완전히 퇴화됐다. 겉으론 무심해 보여도 사실 외로움을 타며, 진정한 마음의 연결을 간절히 원하고 있다.
+                    </div>
+                </div>
+
+                <!-- 연도하 -->
+                <div class="character-card">
+                    <img src="4.png" alt="연도하" class="character-img">
+                    <h4>연도하</h4>
+                    <div class="tag-wrap">
+                        <span class="tag">INTP</span>
+                        <span class="tag">여동생 포지션</span>
+                        <span class="tag">애늙은이</span>
+                    </div>
+                    <ul>
+                        <li><strong>특징:</strong> 말끝을 "오빠아~" 하고 늘이는 특징이 있는 귀여운 여동생 포지션 이무기.</li>
+                    </ul>
+                    <button class="toggle-btn" data-open="속마음 (스포일러) 열기" data-close="속마음 닫기" onclick="toggleSpoiler(this)">속마음 (스포일러) 열기</button>
+                    <div class="spoiler-content">
+                        <strong>[내면의 비밀]</strong><br>
+                        인간들의 뻔한 행동을 비웃을 정도로 세상만사 다 질려버렸다. 하지만 단 한 번만이라도 어린아이처럼 순수하게 설레보는 경험을 해보기를 꿈꾸고 있다. 그녀가 연기하는 모습은 사실 어린아이가 되고싶은 내면을 투영한걸지도 모른다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="s-4">
+            <h2>4. 숨겨진 설정</h2>
+            <p>본 작품의 핵심을 관통하는 중대한 스포일러가 포함되어 있습니다.</p>
+            <button class="toggle-btn" data-open="숨겨진 설정 (스포일러) 열기" data-close="설정 닫기" onclick="toggleSpoiler(this)">숨겨진 설정 (스포일러) 열기</button>
+            <div class="spoiler-content">
+                <strong>[승천의 비밀: 미련의 역설]</strong><br>
+                이무기들은 <strong>아랫세상(현세)에 미련이 남으면 승천하지 못한다.</strong> 주인공과 가까워질수록 그 자체가 '미련'이 되어버리기 때문에, 이무기들은 승천과 사랑 사이에서 고뇌하며 의도적으로 거리를 두는 딜레마에 빠진다.<br><br>
+                <strong>[뱀골마을의 과거사 떡밥]</strong><br>
+                과거 뱀골마을 조상님들이 승천하려던 이무기들을 '큰 뱀'으로 오해해서 기겁하고 도망치는 바람에 승천을 망쳤던 역사가 있다. 마을 이름이 '뱀골마을'인 이유도 이 때문. "산신이 굳이 뱀골마을의 유일하게 남은 자손(주인공)을 타겟으로 지목한 것은, 조상들이 지은 그 죄를 후손에게 갚게 하기 위함이다.
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+    </footer>
+
+    <script>
+        function toggleSpoiler(btn) {
+            // 버튼 바로 다음 요소인 spoiler-content div를 찾음
+            const content = btn.nextElementSibling;
+            
+            if (content.style.display === "block") {
+                content.style.display = "none";
+                btn.innerText = btn.getAttribute('data-open');
+                btn.classList.remove("active");
+            } else {
+                content.style.display = "block";
+                btn.innerText = btn.getAttribute('data-close');
+                btn.classList.add("active");
+            }
+        }
+    </script>
+</body>
+</html>
